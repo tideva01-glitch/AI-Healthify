@@ -1,0 +1,13 @@
+{
+  "name": "ai-nutrients-checker",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "client"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace client",
+    "build": "npm run build --workspace client",
+    "test": "npm run test --workspace client"
+  }
+}
