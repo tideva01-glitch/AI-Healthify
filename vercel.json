@@ -1,0 +1,5 @@
+{
+  "installCommand": "npm install --workspace client",
+  "buildCommand": "npm run build --workspace client",
+  "outputDirectory": "client/dist"
+}
