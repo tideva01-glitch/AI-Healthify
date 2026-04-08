@@ -111,17 +111,34 @@ async function analyzeWithGemini(inputText: string, photoData: string) {
   );
 
   if (!response.ok) {
-    throw new Error("Gemini meal analysis failed.");
+    const errorText = await response.text();
+    console.error("Gemini meal analysis failed", {
+      status: response.status,
+      body: errorText,
+    });
+    return {
+      ...fallbackAnalyzeMeal(inputText),
+      provider: "fallback",
+    };
   }
 
   const payload = await response.json();
   const text = payload.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
-  const parsed = JSON.parse(text);
 
-  return {
-    provider: "gemini",
-    items: Array.isArray(parsed.items) ? parsed.items : [],
-  };
+  try {
+    const parsed = JSON.parse(text);
+
+    return {
+      provider: "gemini",
+      items: Array.isArray(parsed.items) ? parsed.items : [],
+    };
+  } catch (error) {
+    console.error("Gemini returned non-JSON output", { text, error });
+    return {
+      ...fallbackAnalyzeMeal(inputText),
+      provider: "fallback",
+    };
+  }
 }
 
 Deno.serve(async (request) => {
